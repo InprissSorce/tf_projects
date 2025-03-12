@@ -1,0 +1,58 @@
+# Sierpinski's Triangle
+# 3.12.2025 @ 7:35 am
+
+# Documentation for the Turtle module at:
+# https://docs.python.org/3/library/turtle.html
+
+import math, turtle, time
+
+tess = turtle.Turtle()  # create an instance of an object of type Turtle
+canvas = turtle.Screen()  # create an instance of an object of type Screen
+canvas.bgcolor("White")  # background color
+canvas.tracer(48)  # render only every 12th frame - increases animation speed
+# canvas.screensize(640, 480) # throws an exception at CodeHS
+tess.speed(9)  # max draw speed
+tess.color("BlueViolet")  # color of line drawn
+tess.hideturtle()  # remove to see tess
+
+def drawTriangle(leftCorner, sideLength, clr):
+    # Draw a triagle with given position of left corner,
+    # length of a side and line color.
+    x, y = leftCorner[0], leftCorner[1]
+    tess.color(clr)
+    tess.penup()
+    tess.goto(x, y)
+    tess.pendown()
+    tess.goto(x + sideLength / 2, y + math.sqrt(3) * sideLength / 2)
+    tess.goto(x + sideLength, y)
+    tess.goto(x, y)
+    tess.penup()
+
+def serpTri(leftCorner = (-180, -120), sideLength = 600, depth = 6, color = "blue"):
+    if depth == 0:  # maximum recursion depth achieved
+        return
+    drawTriangle(leftCorner, sideLength, color)
+    # compute location of triangles to be drawn in next recursive call
+    mdptLeft = (leftCorner[0] + sideLength / 4, leftCorner[1] + sideLength * math.sqrt(3) / 4)
+    mdptBottom = (leftCorner[0] + sideLength / 2, leftCorner[1])
+    # In each resursive call, depth is decreased by 1.
+    # When the depth reaches 0, the recurion ends.
+    serpTri(leftCorner, sideLength/2, depth-1)
+    serpTri(mdptLeft, sideLength/2, depth-1)
+    serpTri(mdptBottom, sideLength/2, depth-1)
+
+def draw():
+    sideLength = 300
+    maxDepth = 8
+    for d in range(1, maxDepth + 1):
+        # Arguments sent to serpTri: coordinates of left corner,
+        # then side length, then recursion depth.
+        serpTri((-150, -100), sideLength, d)
+        canvas.update()  # uncomment if a tracer has been set
+        time.sleep(2) # pause for 2 seconds
+        if d < maxDepth:
+          tess.clear() # clear screen
+    canvas.update() # perform final update
+    canvas.exitonclick() # keep the window open
+    
+draw()
